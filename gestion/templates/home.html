@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">📊 Dashboard de Ventas</h1>
+    <p class="text-gray-600">Sistema de gestión de clientes, productos y ventas</p>
+</div>
+
+<!-- Resumen: tarjetas -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Clientes</h3>
+        <p class="text-3xl font-bold text-blue-600">{{ clientes_top.count }}</p>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Productos</h3>
+        <p class="text-3xl font-bold text-green-600">{{ productos_mas_vendidos.count }}</p>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-semibold text-gray-700 mb-2">Productos Analizados</h3>
+        <p class="text-3xl font-bold text-purple-600">{{ productos_mas_vendidos.count }}</p>
+    </div>
+</div>
+
+<!-- Listas: sin gráficos por ahora -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Productos más vendidos -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-4 text-gray-800">🏆 Productos Más Vendidos</h2>
+        <div class="space-y-3">
+            {% for producto in productos_mas_vendidos %}
+            <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                <span class="font-medium text-blue-800">{{ producto.nombre }}</span>
+                <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                    {{ producto.total_vendido|default:0 }} unidades
+                </span>
+            </div>
+            {% empty %}
+            <p class="text-gray-500 text-center py-4">No hay datos de ventas aún</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Clientes con más ventas -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold mb-4 text-gray-800">⭐ Clientes con Más Ventas</h2>
+        <div class="space-y-3">
+            {% for cliente in clientes_top %}
+            <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                <span class="font-medium text-green-800">{{ cliente.nombre }}</span>
+                <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                    {{ cliente.total_ventas }} ventas
+                </span>
+            </div>
+            {% empty %}
+            <p class="text-gray-500 text-center py-4">No hay datos de clientes aún</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
