@@ -1,0 +1,3 @@
+/* Archivo CSS mínimo para pruebas de staticfiles */
+body { font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+.header { background: #1f2937; color: white; padding: 12px; }

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Ventas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white p-2 rounded-lg">
+                        <span class="text-blue-600 font-bold text-lg">💰</span>
+                    </div>
+                    <h1 class="text-xl font-bold">Sistema de Ventas</h1>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                    <div class="flex items-center space-x-3">
+                        <span class="text-sm bg-blue-700 px-3 py-1 rounded-full">
+                            👤 {{ user.username }}
+                        </span>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" 
+                                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
+                                Cerrar Sesión
+                            </button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'login' %}" 
+                       class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-300">
+                        Iniciar Sesión
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if user.is_authenticated %}
+            <div class="mt-3 pt-3 border-t border-blue-500">
+                <div class="flex space-x-6">
+                    <a href="{% url 'gestion:home' %}" class="hover:text-blue-200 {% if request.path == '/' %}font-bold underline{% endif %}">
+                        🏠 Dashboard
+                    </a>
+                    <a href="{% url 'gestion:cliente_list' %}" class="hover:text-blue-200 {% if 'clientes' in request.path %}font-bold underline{% endif %}">
+                        👥 Clientes
+                    </a>
+                    <a href="{% url 'gestion:producto_list' %}" class="hover:text-blue-200 {% if 'productos' in request.path %}font-bold underline{% endif %}">
+                        📦 Productos
+                    </a>
+                    <a href="{% url 'gestion:venta_list' %}" class="hover:text-blue-200 {% if 'ventas' in request.path %}font-bold underline{% endif %}">
+                        💰 Ventas
+                    </a>
+                    {% if user.is_staff %}
+                    <a href="/admin/" class="hover:text-blue-200 text-yellow-300">
+                        ⚙️ Admin
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+    
+    <div class="container mx-auto px-4 py-6">
+        {% block content %}
+        {% endblock %}
+    </div>
+    
+    <footer class="bg-gray-800 text-white py-4 mt-8">
+        <div class="container mx-auto px-4 text-center text-sm text-gray-400">
+            <p>Sistema de Gestión de Ventas - Desarrollado por Allen Cordero</p>
+            <p class="mt-1">
+                {% if user.is_authenticated %}
+                Sesión activa como: <span class="text-green-300">{{ user.username }}</span>
+                {% else %}
+                No autenticado
+                {% endif %}
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

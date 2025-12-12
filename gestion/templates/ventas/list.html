@@ -3,7 +3,7 @@
 {% block content %}
 <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold text-gray-800">💰 Lista de Ventas</h1>
-    <a href="{% url 'venta_create' %}" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg">
+    <a href="{% url 'gestion:venta_create' %}" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg">
         + Nueva Venta
     </a>
 </div>
@@ -27,8 +27,8 @@
                 <td class="px-6 py-4 whitespace-nowrap">{{ venta.fecha|date:"d/m/Y H:i" }}</td>
                 <td class="px-6 py-4 whitespace-nowrap font-bold">${{ venta.total }}</td>
                 <td class="px-6 py-4 whitespace-nowrap space-x-2">
-                    <a href="{% url 'venta_detail' venta.id %}" class="text-blue-600 hover:text-blue-900">Ver</a>
-                    <a href="{% url 'venta_delete' venta.id %}" class="text-red-600 hover:text-red-900">Eliminar</a>
+                    <a href="{% url 'gestion:venta_detail' venta.id %}" class="text-blue-600 hover:text-blue-900">Ver</a>
+                    <a href="{% url 'gestion:venta_delete' venta.id %}" class="text-red-600 hover:text-red-900">Eliminar</a>
                 </td>
             </tr>
             {% empty %}

@@ -1,0 +1,42 @@
+{% extends 'base_auth.html' %}
+
+{% block content %}
+<div class="bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">🔐 Iniciar Sesión</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Usuario</label>
+            <input type="text" name="username" required 
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Contraseña</label>
+            <input type="password" name="password" required 
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        
+        {% if form.errors %}
+        <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+            ❌ Usuario o contraseña incorrectos
+        </div>
+        {% endif %}
+        
+        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+            Ingresar al Sistema
+        </button>
+        
+        <div class="mt-6 text-center">
+            <p class="text-gray-600 text-sm">
+                ¿No tienes cuenta? 
+                <a href="{% url 'registro' %}" class="text-blue-500 hover:text-blue-700 font-medium">
+                    Regístrate aquí
+                </a>
+            </p>
+        </div>
+    </form>
+</div>
+{% endblock %}

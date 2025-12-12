@@ -1,29 +1,47 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 from .models import Cliente, Producto, Venta, DetalleVenta
 from django.db.models import Sum, Count
 from .forms import ClienteForm, ProductoForm
+from django.forms import inlineformset_factory
 
+# VISTA DE REGISTRO
+def registro(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'auth/registro.html', {'form': form})
+
+# VISTAS PROTEGIDAS
+@login_required
 def home(request):
-    # Productos más vendidos (ordenados por cantidad total vendida)
     productos_mas_vendidos = Producto.objects.annotate(
         total_vendido=Sum('detalleventa__cantidad')
     ).order_by('-total_vendido')[:5]
     
-    # Clientes con más ventas (ordenados por número de ventas)
     clientes_top = Cliente.objects.annotate(
         total_ventas=Count('venta')
     ).order_by('-total_ventas')[:5]
     
-    return render(request, 'home.html', {
+    return render(request, 'gestion/home.html', {
         'productos_mas_vendidos': productos_mas_vendidos,
         'clientes_top': clientes_top
     })
 
-# Vistas para Clientes
+# CLIENTES
+@login_required
 def cliente_list(request):
     clientes = Cliente.objects.all()
     return render(request, 'clientes/list.html', {'clientes': clientes})
 
+@login_required
 def cliente_create(request):
     if request.method == 'POST':
         form = ClienteForm(request.POST)
@@ -34,6 +52,7 @@ def cliente_create(request):
         form = ClienteForm()
     return render(request, 'clientes/form.html', {'form': form, 'titulo': 'Crear Cliente'})
 
+@login_required
 def cliente_edit(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     if request.method == 'POST':
@@ -45,6 +64,7 @@ def cliente_edit(request, id):
         form = ClienteForm(instance=cliente)
     return render(request, 'clientes/form.html', {'form': form, 'titulo': 'Editar Cliente'})
 
+@login_required
 def cliente_delete(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     if request.method == 'POST':
@@ -52,11 +72,13 @@ def cliente_delete(request, id):
         return redirect('cliente_list')
     return render(request, 'clientes/delete.html', {'cliente': cliente})
 
-# Vistas para Productos
+# PRODUCTOS
+@login_required
 def producto_list(request):
     productos = Producto.objects.all()
     return render(request, 'productos/list.html', {'productos': productos})
 
+@login_required
 def producto_create(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST)
@@ -67,6 +89,7 @@ def producto_create(request):
         form = ProductoForm()
     return render(request, 'productos/form.html', {'form': form, 'titulo': 'Crear Producto'})
 
+@login_required
 def producto_edit(request, id):
     producto = get_object_or_404(Producto, id=id)
     if request.method == 'POST':
@@ -78,6 +101,7 @@ def producto_edit(request, id):
         form = ProductoForm(instance=producto)
     return render(request, 'productos/form.html', {'form': form, 'titulo': 'Editar Producto'})
 
+@login_required
 def producto_delete(request, id):
     producto = get_object_or_404(Producto, id=id)
     if request.method == 'POST':
@@ -85,9 +109,7 @@ def producto_delete(request, id):
         return redirect('producto_list')
     return render(request, 'productos/delete.html', {'producto': producto})
 
-from django.forms import inlineformset_factory
-
-# Crear el formset para detalles de venta
+# VENTAS
 DetalleVentaFormSet = inlineformset_factory(
     Venta, DetalleVenta, 
     fields=('producto', 'cantidad', 'precio_unitario'), 
@@ -95,14 +117,14 @@ DetalleVentaFormSet = inlineformset_factory(
     can_delete=True
 )
 
-# Vistas para Ventas
+@login_required
 def venta_list(request):
     ventas = Venta.objects.all().select_related('cliente')
     return render(request, 'ventas/list.html', {'ventas': ventas})
 
+@login_required
 def venta_create(request):
     if request.method == 'POST':
-        # Lógica para crear venta (la haremos simple por ahora)
         cliente_id = request.POST.get('cliente')
         cliente = get_object_or_404(Cliente, id=cliente_id)
         venta = Venta.objects.create(cliente=cliente, total=0)
@@ -116,6 +138,7 @@ def venta_create(request):
             'titulo': 'Crear Venta'
         })
 
+@login_required
 def venta_detail(request, id):
     venta = get_object_or_404(Venta, id=id)
     detalles = venta.detalles.all().select_related('producto')
@@ -124,6 +147,7 @@ def venta_detail(request, id):
         'detalles': detalles
     })
 
+@login_required
 def venta_delete(request, id):
     venta = get_object_or_404(Venta, id=id)
     if request.method == 'POST':

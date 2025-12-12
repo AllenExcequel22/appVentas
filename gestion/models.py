@@ -34,3 +34,7 @@ class DetalleVenta(models.Model):
     
     def __str__(self):
         return f"Detalle {self.id}"
+    
+    @property
+    def subtotal(self):
+        return self.cantidad * self.precio_unitario

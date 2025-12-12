@@ -3,7 +3,7 @@
 {% block content %}
 <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold text-gray-800">👥 Lista de Clientes</h1>
-    <a href="{% url 'cliente_create' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+    <a href="{% url 'gestion:cliente_create' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
         + Nuevo Cliente
     </a>
 </div>
@@ -27,8 +27,8 @@
                 <td class="px-6 py-4 whitespace-nowrap">{{ cliente.email }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">{{ cliente.telefono }}</td>
                 <td class="px-6 py-4 whitespace-nowrap space-x-2">
-                    <a href="{% url 'cliente_edit' cliente.id %}" class="text-blue-600 hover:text-blue-900">Editar</a>
-                    <a href="{% url 'cliente_delete' cliente.id %}" class="text-red-600 hover:text-red-900">Eliminar</a>
+                    <a href="{% url 'gestion:cliente_edit' cliente.id %}" class="text-blue-600 hover:text-blue-900">Editar</a>
+                    <a href="{% url 'gestion:cliente_delete' cliente.id %}" class="text-red-600 hover:text-red-900">Eliminar</a>
                 </td>
             </tr>
             {% empty %}
